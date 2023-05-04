@@ -27,7 +27,7 @@ class Game:
         self.y_pos_bg = 380
 
         pygame.mixer.music.load(r'C:\Users\queir\Desktop\JalaM2\Dino-MOD2-Mariano\dino_runner\assets\Sound\Trilha.mp3')
-        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.set_volume(0.3)
         
         self.player = Dinosaur()
         self.obstacle_manager = ObstacleManager()
