@@ -1,10 +1,11 @@
 import pygame
+import pygame.mixer
 from pygame.sprite import Sprite
-from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DEFAULT_TYPE, SHIELD_TYPE, DUCKING_SHIELD, JUMPING_SHIELD, RUNNING_SHIELD
+from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DEFAULT_TYPE, SHIELD_TYPE, HAMMER_TYPE, DUCKING_HAMMER, DUCKING_SHIELD, JUMPING_HAMMER, JUMPING_SHIELD, RUNNING_HAMMER, RUNNING_SHIELD
 
-DUCK_IMG = { DEFAULT_TYPE: DUCKING, SHIELD_TYPE: DUCKING_SHIELD}
-JUMP_IMG = { DEFAULT_TYPE: JUMPING, SHIELD_TYPE: JUMPING_SHIELD}
-RUN_IMG = { DEFAULT_TYPE: RUNNING, SHIELD_TYPE: RUNNING_SHIELD}
+DUCK_IMG = { DEFAULT_TYPE: DUCKING, SHIELD_TYPE: DUCKING_SHIELD, HAMMER_TYPE: DUCKING_HAMMER }
+JUMP_IMG = { DEFAULT_TYPE: JUMPING, SHIELD_TYPE: JUMPING_SHIELD, HAMMER_TYPE: JUMPING_HAMMER }
+RUN_IMG = { DEFAULT_TYPE: RUNNING, SHIELD_TYPE: RUNNING_SHIELD, HAMMER_TYPE: RUNNING_HAMMER }
 X_POS = 80
 Y_POS = 310
 Y_POS_DUCK = 340
@@ -24,6 +25,8 @@ class Dinosaur(Sprite):
         self.dino_duck = False
         self.dino_jump = False
         self.dino_jump_vel = JUMP_VEL
+        self.sound_jump = pygame.mixer.Sound(r'C:\Users\queir\Desktop\JalaM2\Dino-MOD2-Mariano\dino_runner\assets\Sound\Jump.wav') # importar o som desejado
+        self.sound_jump.set_volume(0.3)
         self.setup_state()
 
     def setup_state(self):
@@ -32,7 +35,7 @@ class Dinosaur(Sprite):
         self.show_text = False
         self.shield_time_up = 0
 
-    def update(self, user_input):
+    def update(self, user_input):        
         if self.dino_run:
             self.run()
         elif self.dino_jump:
@@ -44,7 +47,8 @@ class Dinosaur(Sprite):
             self.dino_run = False
             self.dino_jump = True
             self.dino_duck = False
-
+            self.sound_jump.play() # reproduzir o som de pulo ao saltar
+             
         elif user_input[pygame.K_DOWN] and not self.dino_jump:
             self.dino_run = False
             self.dino_jump = False
@@ -84,3 +88,5 @@ class Dinosaur(Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
+        
+        

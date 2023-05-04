@@ -6,6 +6,7 @@ from dino_runner.components.Dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.utils.text_utils import draw_message_component
 from dino_runner.components.powerups.power_up_manager import PowerUpManager
+from pygame import mixer
 
 class Game:
     def __init__(self):
@@ -19,14 +20,19 @@ class Game:
         # pontuação
         self.score = 0
         self.death_count = 0
+        self.high_score = 0
         self.game_speed = 20
         # localização
         self.x_pos_bg = 0
         self.y_pos_bg = 380
 
+        pygame.mixer.music.load(r'C:\Users\queir\Desktop\JalaM2\Dino-MOD2-Mariano\dino_runner\assets\Sound\Trilha.mp3')
+        pygame.mixer.music.set_volume(0.1)
+        
         self.player = Dinosaur()
         self.obstacle_manager = ObstacleManager()
         self.power_up_manager = PowerUpManager()
+        
 
 # função de executar
     def execute(self):
@@ -40,10 +46,12 @@ class Game:
 
     def run(self):
         self.playing = True
+        pygame.mixer.music.play(-1)
         self.obstacle_manager.reset_obstacles()
         self.power_up_manager.reset_power_ups()
         self.game_speed = 20
         self.score = 0
+        
         # jogo rodando
         while self.playing:
             self.events()
@@ -71,6 +79,11 @@ class Game:
         self.score += 1
         if self.score % 100 == 0:
             self.game_speed += 5
+        self.update_high_score()
+            
+    def update_high_score(self):
+        if self.score > self.high_score:
+            self.high_score = self.score
 
     def draw(self):
         self.clock.tick(FPS)
@@ -89,10 +102,10 @@ class Game:
         image_width = BG.get_width()
         self.screen.blit(BG, (self.x_pos_bg, self.y_pos_bg))
         self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
+        self.x_pos_bg -= self.game_speed
         if self.x_pos_bg <= -image_width:
-            self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
             self.x_pos_bg = 0
-            self.x_pos_bg -= self.game_speed
+            self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
 
     def draw_score(self):
         draw_message_component(
@@ -124,9 +137,10 @@ class Game:
                 self.playing = False
                 self.running = False
             elif event.type == pygame.KEYDOWN:
-                self.run()
+                self.run()      
 
     def show_menu(self):
+        
         self.screen.fill((255, 255, 255))
         half_screen_height = SCREEN_HEIGHT // 2
         half_screen_width = SCREEN_WIDTH // 2
@@ -145,7 +159,15 @@ class Game:
                 self.screen, 
                 pos_y_center=half_screen_height - 100
                 )
+            
+            draw_message_component(
+                f"Recorde de pontuação: {self.high_score}",
+                self.screen,
+                pos_x_center=900,
+                pos_y_center=300
+                )
+            
             self.screen.blit(ICON, (half_screen_width - 40, half_screen_height - 30))
-        
+            
         pygame.display.flip()
         self.handle_events_on_menu()
