@@ -155,7 +155,7 @@ class Game:
             )
 
             draw_message_component(
-                f"Contagem de vida: {self.death_count}",
+                f"Tentativas: {self.death_count}",
                 self.screen, 
                 pos_y_center=half_screen_height - 100
                 )
