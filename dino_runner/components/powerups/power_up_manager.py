@@ -11,7 +11,7 @@ class PowerUpManager:
         if len(self.power_ups) == 0 and self.when_appears == score:
             self.when_appears += random.randint(200, 300)
             # Com isso o Hammer será mais raro 
-            if random.randint(0, 3) == 0:
+            if random.randint(0, 2) == 0:
                 self.power_ups.append(Hammer())
             else:
                 self.power_ups.append(Shield())
